@@ -1,6 +1,6 @@
 {
   "name": "serverless-simple-alias",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "Serverless plugin for creating Lambda aliases without imposing a workflow (YMMV)",
   "main": "src/index.js",
   "repository": {
