@@ -1,0 +1,71 @@
+{
+  "name": "serverless-simple-alias",
+  "version": "0.0.0-development",
+  "description": "Serverless plugin for creating Lambda aliases without imposing a workflow (YMMV)",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digio/serverless-simple-alias.git"
+  },
+  "homepage": "https://github.com/digio/serverless-simple-alias#readme",
+  "bugs": {
+    "url": "https://github.com/digio/serverless-simple-alias/issues"
+  },
+  "keywords": [
+    "serverless",
+    "plugin",
+    "alias"
+  ],
+  "author": "DigIO",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint --max-warnings=0 --fix src/",
+    "verify": "eslint --max-warnings=0 src/",
+    "test": "npm-run-all test:report",
+    "test:unit": "jest",
+    "test:report": "jest --no-cache --coverage --json --outputFile=test-reports/unit/unit.json",
+    "test:reportlist": "jest --no-cache --coverage",
+    "test:snaps": "jest -u",
+    "test:watch": "jest --watchAll",
+    "upload-coverage": "coveralls < test-reports/coverage/lcov.info",
+    "semantic-release": "semantic-release"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm-run-all verify test",
+      "commit-msg": "cz-customizable-ghooks"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "config/commitMessageConfig.js"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@semantic-release/changelog": "5.0.1",
+    "@semantic-release/git": "9.0.0",
+    "coveralls": "3.1.0",
+    "cz-customizable": "6.3.0",
+    "eslint": "7.8.1",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-unicorn": "21.0.0",
+    "husky": "4.2.5",
+    "jest": "26.4.2",
+    "npm-run-all": "4.1.5",
+    "prettier": "2.1.1",
+    "semantic-release": "17.1.1"
+  },
+  "files": [
+    "src"
+  ],
+  "engines": {
+    "node": ">=10",
+    "npm": ">=6.9"
+  }
+}

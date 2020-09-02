@@ -1,0 +1,336 @@
+{
+  "processedInput": {
+    "commands": ["print"],
+    "options": {
+      "s": "pre-prod",
+      "c": "slsConfig.js",
+      "config": "slsConfig.js",
+      "format": "json",
+      "stage": "pre-prod"
+    }
+  },
+  "service": {
+    "provider": {
+      "stage": "${opt:stage, \"dev\"}",
+      "variableSyntax": null,
+      "name": "aws",
+      "runtime": "nodejs12.x",
+      "region": "ap-southeast-2",
+      "versionFunctions": true,
+      "cfLogs": true,
+      "timeout": 28,
+      "memorySize": 128,
+      "tracing": {
+        "apiGateway": "${self:custom.env.TRACING_ENABLED}",
+        "lambda": "${self:custom.env.TRACING_ENABLED}"
+      },
+      "environment": {
+        "STAGE": "${opt:stage, self:provider.stage}",
+        "REGION": "${opt:region, self:provider.region}",
+        "SERVICE_INSTANCE_NAME": "${self:provider.stage}-${self:service}",
+        "CUSTOM_DOMAIN_ENABLED": "${self:custom.customDomain.enabled}",
+        "BUSINESS_CATEGORY": "${self:service}",
+        "XRAY_ENABLED": "${self:custom.env.TRACING_ENABLED}"
+      },
+      "tags": {
+        "BUSINESS_CATEGORY": "${self:service}",
+        "SYSTEM_NAME": "${self:custom.env.SYSTEM_NAME}",
+        "SERVICE_NAME": "${self:service}"
+      },
+      "deploymentBucket": "${self:custom.env.SYSTEM_NAME}-serverless-deployment-${file(../common/config/sls/baseServerless.js):getDynamicValue.AWS_ENV_NAME}",
+      "iamRoleStatements": [
+        {
+          "Action": [{}],
+          "Resource": "*",
+          "Effect": "Allow"
+        }
+      ],
+      "deploymentBucketObject": {
+        "name": "${self:custom.env.SYSTEM_NAME}-serverless-deployment-${file(../common/config/sls/baseServerless.js):getDynamicValue.AWS_ENV_NAME}",
+        "serverSideEncryption": "aws:kms"
+      },
+      "compiledCloudFormationTemplate": {
+        "Resources": {
+          "WebHookLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "some-bucket",
+                "S3Key": "serverless/service/stage/1598932385217-2020-09-01T03:53:05.217Z/some.zip"
+              },
+              "FunctionName": "service-stage-webHook",
+              "Handler": "dist/webhook/eventWebHook.handler",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 30
+            },
+            "DependsOn": ["WebHookLogGroup"]
+          },
+          "WebHookLambdaFunctionJNcivYNMb6OXh1g6GW5oLreszRH5VgX9cPOshMeCro": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "WebHookLambdaFunction"
+              },
+              "CodeSha256": "6E3p4pKklU6AFa6ouCVMLA63IPDLUMbm+P3sdxwshyE="
+            }
+          },
+          "FooLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "some-bucket",
+                "S3Key": "serverless/service/stage/1598932385217-2020-09-01T03:53:05.217Z/some.zip"
+              },
+              "FunctionName": "service-stage-webHook",
+              "Handler": "dist/foo/eventWebHook.handler",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+              },
+              "Runtime": "nodejs12.x",
+              "Timeout": 30
+            },
+            "DependsOn": ["FooLogGroup"]
+          },
+          "FooLambdaFunctionJNcivYNMb6OXh1g6GW5oLreszRH5VgX9cPOshMeCro": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "FooLambdaFunction"
+              },
+              "CodeSha256": "6E3p4pKklU6AFa6ouCVMLA63IPDLUMbm+P3sdxwshyE="
+            }
+          },
+          "ApiGatewayMethodWebHookOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,x-sessionid,x-trackingid,x-initialsystem,x-initialcomponent,Authorization'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceWebHook"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodWebHookVarEventName": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {
+                "method.request.path.cartContextKey": true
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceWebHookVarChild"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "WebHookLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodFoo": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {
+                "method.request.path.cartContextKey": true
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceFooChild"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "FooLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "WebHookLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "WebHookLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "FooLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "FooLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "custom": {
+      "env": {
+        "AWS_ACCOUNT_ID": "${stageEnv:AWS_ACCOUNT_ID}",
+        "TRACING_ENABLED": "${stageEnv:TRACING_ENABLED}",
+        "webBucketName": "${stageEnv:WEB_DOMAIN}"
+      },
+      "simpleAlias": {
+        "activeAliasName": "LIVE",
+        "useActiveAliasInGateway": true,
+        "makeLambdasActive": true,
+        "aliases": ["NEW"]
+      }
+    }
+  }
+}

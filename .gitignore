@@ -1,0 +1,53 @@
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# OS X temporary files
+**/.DS_Store
+
+# serverless dir
+**/.serverless
+
+# Test reports
+/test-reports/unit/*
+/test-reports/coverage/*
+
+# Keep .gitkeep files
+# +----------------------------+-------------------------------+
+# | To keep an empty directory, add a .gitkeep file to it      |
+# | and ignore the directory with a wildcard:                  |
+# |                                                            |
+# |     /path/to/dir/*                                         |
+# |                                                            |
+# | This will ignore the content but not the directory itself. |
+# +------------------------------------------------------------+
+!/**/.gitkeep

@@ -1,0 +1,24 @@
+language: node_js
+
+node_js:
+  - '10'
+
+install:
+  - npm install
+
+script:
+  - npm run verify
+  - npm run test:report
+
+after_success:
+  - npm run upload-coverage
+  - npx semantic-release
+
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
+
+notifications:
+  email:
+    recipients:
+      - brett.uglow@digio.com.au
