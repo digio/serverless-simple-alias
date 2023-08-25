@@ -86,6 +86,14 @@ function addAPIGatewayConfig(activeAliasName, compiledResources) {
   const lambdaPermissions = getResources(compiledResources, 'AWS::Lambda::Permission');
 
   lambdaPermissions.forEach(([resourceName, resource]) => {
+   // FIX APPLIED: lambda permission may not be a function always, but may refer to an ARN of an existing AWS function
+    // e.g for existing authorizers in functions referred with ARN, permission is still created to allow API Gateway
+    // to invoke the authorizer function which may be existing in AWS and not be part of this service
+    // and then FunctionName: { 'Fn::GetAtt': [ 'SomeFunctionName', 'Arn' ] },
+    // will be FunctionName: arn:....
+    if (!resource.Properties.FunctionName['Fn::GetAtt']) {
+        return;
+    }
     // Get the existing function name from the resource, then use it to refer to the alias-resource
     const existingLambdaName = resource.Properties.FunctionName['Fn::GetAtt'][0];
     compiledResources[resourceName].Properties.FunctionName = {

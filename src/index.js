@@ -5,10 +5,13 @@ const { addAliases, addAPIGatewayConfig } = require('./cloudFormationBuilder');
 const PLUGIN_CONFIG_KEY = 'simpleAlias';
 const PLUGIN_NAME = 'serverless-simple-alias';
 
+// turn off by default for lambdas that do not use alias
+// so that framework can provide this feature only for required lambdas
 const DEFAULT_CONFIG = {
-  activeAliasName: 'ACTIVE',
-  useActiveAliasInGateway: true,
-  makeLambdasActive: true,
+  activeAliasName: 'INACTIVE',
+  useActiveAliasInGateway: false,
+  makeLambdasActive: false,
+  aliases: []
 };
 
 class ResolveStageVars {
