@@ -44,10 +44,10 @@ plugins:
 
 custom:
   simpleAlias:
-    activeAliasName: 'ACTIVE'  # Default: 'ACTIVE'
-    useActiveAliasInGateway: true   # Default: true. Whether to change API Gateway to target the active alias or not
-    makeLambdasActive: true  # Default: true. Whether to apply the active alias to the lambdas that are being deployed now. Could vary per environment.
-    aliases: # An array of additional aliases to apply when deploying the Lambda functions
+    activeAliasName: 'ACTIVE'  # Default: 'INACTIVE'
+    useActiveAliasInGateway: true   # Default: false. Whether to change API Gateway to target the active alias or not
+    makeLambdasActive: true  # Default: false. Whether to apply the active alias to the lambdas that are being deployed now. Could vary per environment.
+    aliases: # Default: empty list. An array of additional aliases to apply when deploying the Lambda functions
       - '${self:provider.environment.packageVersion}`
     
 ```
