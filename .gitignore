@@ -41,6 +41,9 @@ node_modules/
 /test-reports/unit/*
 /test-reports/coverage/*
 
+# IDE files
+.idea
+
 # Keep .gitkeep files
 # +----------------------------+-------------------------------+
 # | To keep an empty directory, add a .gitkeep file to it      |
